@@ -32,6 +32,6 @@ SUN_MASS = 1.98892e30
 
 MOVEMENT_SPEED = 1e8
 ROTATE_SPEED = 5e-3
-FOV = math.pi/2 + 1
+FOV = math.pi/2
 HALF_FOV = FOV / 2
 SCR_DISTANCE = WIDTH // (math.tan(HALF_FOV) * 2)

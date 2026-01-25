@@ -34,11 +34,14 @@ class Renderer:
         phi = math.atan2(vec.x, vec.z)
         return [phi, theta]
 
-    def world_to_camera_space(self, vec: Vector3):
+    def world_to_camera_space(self, vec: Vector3, default_vectors = []):
         # Векторы системы координат камеры
-        forward = self.rotation_to_vector(self.camera_rotation)
-        up = self.rotation_to_vector([self.camera_rotation[0], self.camera_rotation[1]-math.pi/2])
-        right = forward.cross(up)
+        if not default_vectors:
+            forward = self.rotation_to_vector(self.camera_rotation)
+            up = self.rotation_to_vector([self.camera_rotation[0], self.camera_rotation[1]-math.pi/2])
+            right = forward.cross(up)
+        else:
+            forward, up, right = default_vectors
         # Проекция world_vec на оси камеры
         x = right*vec
         y = up*vec
@@ -48,9 +51,12 @@ class Renderer:
 
     def render_cels(self, cels: list[Celestial]):
         draws = []
+        default_vectors = [self.rotation_to_vector(self.camera_rotation),
+        self.rotation_to_vector([self.camera_rotation[0], self.camera_rotation[1]-math.pi/2])]
+        default_vectors.append(default_vectors[0].cross(default_vectors[1]))
         for cel in cels:
             vec = cel.position - self.camera_pos # От камеры до центра тел
-            vec = self.world_to_camera_space(vec) # Перевод в локальную систему координат
+            vec = self.world_to_camera_space(vec, default_vectors) # Перевод в локальную систему координат
             rot_vec = self.vector_to_rotation(vec) # Перевод в rotation
             rot_vec = rot_vec[0], rot_vec[1] - math.pi/2
             # rot_vec = [rot_vec[0] - self.camera_rotation[0], rot_vec[1] - self.camera_rotation[1]] # Относительная rotation
@@ -59,17 +65,13 @@ class Renderer:
                 scr_radius = cel.radius * SCR_DISTANCE // abs(vec)
                 scr_position = [HALF_WIDTH + rot_vec[0] * WIDTH // (HALF_FOV * 2), 
                                 HALF_HEIGHT - WIDTH * rot_vec[1] // (HALF_FOV * 2)]
-                # scr_position = [HALF_WIDTH + math.tan(rot_vec[0]) * SCR_DISTANCE,
-                #                 HALF_HEIGHT - math.tan(rot_vec[1]) * SCR_DISTANCE]
+                # scr_position = [HALF_WIDTH + (vec.x / vec.z) * SCR_DISTANCE, 
+                #                 HALF_HEIGHT - (vec.y / vec.z) * SCR_DISTANCE]
                 if scr_radius <= 0: scr_radius = 1
 
-                ind = 0
-                for i, draw in enumerate(draws):
-                    if abs(vec) > draws[i][3]: ind += 1
-                    else: break  
-                draws.insert(ind, [cel, scr_position, scr_radius, abs(vec)])
+                draws.append([cel, scr_position, scr_radius, abs(vec)])
+        draws.sort(key=lambda x: x[3], reverse=True)
 
-        draws.reverse()
         for cel, scr_position, scr_radius, abs_vec in draws:
             pygame.draw.circle(self.scr, cel.color, scr_position, scr_radius)
             # print(cel.color)
