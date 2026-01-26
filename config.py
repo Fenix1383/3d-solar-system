@@ -28,6 +28,8 @@ ORANGE = (255, 165, 0)
 GRAVITATION_CONSTANT = 6.67430e-11
 SUN_MASS = 1.98892e30
 
+TIME_SCALE = FPS * 1440  # Один шаг симуляции равен 1 суткам (в секундах)
+
 # Camera config
 
 MOVEMENT_SPEED = 1e8
@@ -35,3 +37,8 @@ ROTATE_SPEED = 5e-3
 FOV = math.pi/2
 HALF_FOV = FOV / 2
 SCR_DISTANCE = WIDTH // (math.tan(HALF_FOV) * 2)
+
+# INITED Physics
+
+SOFTENING = 1e5
+SOFTENING_SQ = SOFTENING**2  # Предварительный расчет

@@ -11,13 +11,14 @@ class Celestial:
         self.name = name
 
 def celestial2_scalar_force(cel1: Celestial, cel2: Celestial) -> float:
-    return (GRAVITATION_CONSTANT*cel1.mass*cel2.mass
+    dist = vector3_distance(cel1.position, cel2.position)
+    return ((GRAVITATION_CONSTANT*cel1.mass*cel2.mass)
             /
-            vector3_distance(cel1.position, cel2.position)**2)
+            (dist*dist + SOFTENING_SQ))
 
 def celestial2_vector_force(cel1: Celestial, cel2: Celestial) -> Vector3:
     dist = vector3_distance(cel1.position, cel2.position)
-    scalar = (GRAVITATION_CONSTANT*cel1.mass*cel2.mass / dist**2)
+    scalar = celestial2_scalar_force(cel1, cel2)
     vector = cel2.position - cel1.position
     return (vector/abs(vector))*scalar
 
