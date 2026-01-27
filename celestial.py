@@ -12,9 +12,10 @@ class Celestial:
 
 def celestial2_scalar_force(cel1: Celestial, cel2: Celestial) -> float:
     dist = vector3_distance(cel1.position, cel2.position)
-    return ((GRAVITATION_CONSTANT*cel1.mass*cel2.mass)
+    dist = max(dist, cel1.radius + cel2.radius)
+    return ((g.gravitation_constant*cel1.mass*cel2.mass)
             /
-            (dist*dist + SOFTENING_SQ))
+            (dist*dist))
 
 def celestial2_vector_force(cel1: Celestial, cel2: Celestial) -> Vector3:
     dist = vector3_distance(cel1.position, cel2.position)

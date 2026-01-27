@@ -5,6 +5,7 @@ from celestial import Celestial
 from vector import Vector3
 from render import Renderer
 from physics import update_physics
+from writer import input_text
 
 
 def create_solar_system():
@@ -40,7 +41,7 @@ def create_solar_system():
         
         # 2. Расчет скорости для круговой орбиты: v = sqrt(G * M_sun / R)
         # Важно: учитываем только массу Солнца, так как масса планет пренебрежимо мала
-        velocity_scalar = math.sqrt(GRAVITATION_CONSTANT * sun_mass / distance)
+        velocity_scalar = math.sqrt(g.gravitation_constant * sun_mass / distance)
         
         # 3. Направление скорости: перпендикулярно радиус-вектору (по оси Z)
         vel = Vector3(0, 0, velocity_scalar)
@@ -65,14 +66,42 @@ earth = Celestial(6e24, 6e6, Vector3(1.5e11, 0, 0), Vector3(0, 0, 0), SKYBLUE, "
 
 all_cels = create_solar_system()
 
+writing = [False, 'g']
 renderer = Renderer(scr, clock, all_cels)
 
+unfixed_dt = True
 while True: 
-    dt_for_physics = (clock.get_time() / 1000.0) * TIME_SCALE
+    if unfixed_dt: dt_for_physics = (clock.get_time() / 1000.0) * TIME_SCALE
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             exit()
+        elif event.type == pygame.KEYDOWN and not writing[0]:
+            if event.key == pygame.K_g:
+                writing = [True, 'g']
+                print("enter G")
+            elif event.key == pygame.K_t:
+                writing = [True, 'dt']
+                print("enter dt")
+
+        elif writing[0]:
+            code = input_text(event)
+            if code:
+                try:
+                    if writing[1] == 'g':
+                        g.gravitation_constant = float(code)*(10**-11)
+                        if not float(code):
+                            g.gravitation_constant = DEFAULT_G
+                        print("NEW G =", g.gravitation_constant)
+                    if writing[1] == 'dt':
+                        dt_for_physics = int(code)
+                        unfixed_dt = False
+                        if not int(code):
+                            unfixed_dt = True
+                        print("NEW dt =", dt_for_physics)
+                    
+                except: pass
+                writing[0] = False
 
     scr.fill(BLACK)
 

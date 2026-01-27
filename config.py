@@ -3,7 +3,7 @@ import math
 # Pygame config
 
 WIDTH, HEIGHT = 1200, 800
-FPS = 60
+FPS = 120
 HALF_WIDTH = WIDTH // 2
 HALF_HEIGHT = HEIGHT // 2
 RESOLUTION = WIDTH / HEIGHT
@@ -25,14 +25,20 @@ ORANGE = (255, 165, 0)
 
 # Physics config
 
-GRAVITATION_CONSTANT = 6.67430e-11
+DEFAULT_G = 6.67430e-11
+class Gravitation:
+    def __init__(self):
+        self.gravitation_constant = DEFAULT_G
+
+g = Gravitation()
+
 SUN_MASS = 1.98892e30
 
 TIME_SCALE = FPS * 1440  # Один шаг симуляции равен 1 суткам (в секундах)
 
 # Camera config
 
-MOVEMENT_SPEED = 1e8
+MOVEMENT_SPEED = 1e10
 ROTATE_SPEED = 5e-3
 FOV = math.pi/2
 HALF_FOV = FOV / 2
