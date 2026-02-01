@@ -1,14 +1,14 @@
 ## 1. Установка
 ### Подготовка
-Убедись, что вы имеете python 3.8 или версией выше на вашем компьютере. You will also need the following Python libraries:
+Убедись, что вы имеете python 3.8 или версией выше на вашем компьютере. Вам также нужны следующие библиотеки:
 
-* `pygame` for rendering the simulation.\
-You can install these libraries using pip:
+* `pygame` для отрисовки симуляции\
+Вы можете установить его при помощи pip:
 
 ![alt text](/img/image.png)
 
-### [Link->Cloning the Repository: solar-system-simulation](https://github.com/Fenix1383/3d-solar-system)
-Clone the repository to your local machine:
+### [Ссылка->Клон репозитория: 3d-solar-system](https://github.com/Fenix1383/3d-solar-system)
+Клонируйте репозиторий на ваш компьютер.
 
 ![alt text](/img/image-1.png)
 
